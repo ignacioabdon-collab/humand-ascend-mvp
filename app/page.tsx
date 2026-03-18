@@ -17,7 +17,7 @@ export default function DashboardPage() {
                   Humand Ascend
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Backoffice - Panel de Administracion
+                  Backoffice - Panel de Grabaciones
                 </p>
               </div>
             </div>
