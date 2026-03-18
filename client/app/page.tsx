@@ -101,7 +101,7 @@ export default function TalentPulse() {
   }
 
   return (
-    <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6 font-sans">
+    <main className="min-h-screen bg-[#f0f2f5] flex flex-col items-center justify-center p-6 font-sans">
       <div className={`w-full max-w-lg transition-opacity duration-300 ease-in-out ${isTransitioningScreen ? 'opacity-0' : 'opacity-100'}`}>
 
 
@@ -124,16 +124,24 @@ export default function TalentPulse() {
                   </p>
                 </div>
                 <div
-                  className={`mt-12 transition-opacity duration-1000 ease-in-out ${
+                  className={`mt-16 transition-opacity duration-1000 ease-in-out ${
                     showContinueHint ? "opacity-100" : "opacity-0"
                   }`}
                 >
-                  <p
-                    className="text-lg font-medium text-muted-foreground animate-pulse"
-                    style={{ animationDuration: '3s' }}
+                  <button
+                    className="flex items-center justify-center gap-2 px-8 py-3 rounded-full font-medium text-primary transition-transform duration-200 active:scale-95 animate-pulse"
+                    style={{
+                      background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                      boxShadow: '6px 6px 15px rgba(0, 0, 0, 0.1), -6px -6px 15px rgba(255, 255, 255, 0.9), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      animationDuration: '3s'
+                    }}
                   >
-                    Pulsa para continuar
-                  </p>
+                    Continuar
+                    <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             )}
@@ -189,7 +197,7 @@ export default function TalentPulse() {
                     {isRecording ? (
                       <Square className="w-12 h-12 text-white drop-shadow-sm" />
                     ) : (
-                      <Mic className="w-14 h-14 drop-shadow-sm text-primary" />
+                      <Mic className={`w-14 h-14 drop-shadow-sm transition-colors duration-300 ${recordingPhase === "review" ? "text-muted-foreground/50" : "text-primary"}`} />
                     )}
                   </div>
                   <span className="sr-only">
@@ -216,32 +224,47 @@ export default function TalentPulse() {
               </div>
 
               {/* Instructions - fixed height */}
-              <p className="text-center text-sm italic text-muted-foreground mt-8 h-10 transition-opacity duration-300 px-4 max-w-sm mx-auto">
-                {recordingPhase === "review"
-                  ? "Grabacion lista"
-                  : "Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?"}
-              </p>
+              <div className="relative mt-8 h-28 px-4 max-w-sm mx-auto w-full">
+                <p 
+                  className={`absolute inset-0 text-center text-sm italic text-muted-foreground transition-opacity duration-500 ${
+                    recordingPhase === "review" ? "opacity-0" : "opacity-100"
+                  }`}
+                >
+                  Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?
+                </p>
+                <p 
+                  className={`absolute inset-0 text-center text-sm text-muted-foreground transition-opacity duration-1000 ${
+                    recordingPhase === "review" ? "opacity-100 delay-[600ms]" : "opacity-0"
+                  }`}
+                >
+                  El resumen de tu día está listo para enviarse. Registrar tus logros nos ayuda a reconocer tu esfuerzo y potenciar tu crecimiento.
+                </p>
+              </div>
 
               {/* Actions - fixed height container to prevent layout shift */}
-              <div className="h-14 flex items-center justify-center mt-4 relative w-full">
+              <div className="h-24 flex items-center justify-center mt-16 relative w-full">
                 {/* Upload Option */}
-                <button
-                  onClick={() => {
-                    // TODO: Implement upload flow
-                    console.log("Subiendo audio...", payload)
-                  }}
-                  className={`absolute flex items-center justify-center gap-3 px-10 py-4 rounded-full font-medium text-lg text-primary transition-all duration-700 ease-out active:scale-95 ${
-                    recordingPhase === "review" ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+                <div 
+                  className={`absolute transition-all duration-1000 ease-out ${
+                    recordingPhase === "review" ? "opacity-100 translate-y-0 delay-[1800ms]" : "opacity-0 translate-y-4 pointer-events-none"
                   }`}
-                  style={{
-                    background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
-                    boxShadow: '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.5)',
-                  }}
                 >
-                  <Send className="w-5 h-5 drop-shadow-sm" />
-                  Subir grabación
-                </button>
+                  <button
+                    onClick={() => {
+                      // TODO: Implement upload flow
+                      console.log("Subiendo audio...", payload)
+                    }}
+                    className="flex items-center justify-center gap-3 px-10 py-4 rounded-full font-medium text-lg text-primary transition-transform duration-200 active:scale-95"
+                    style={{
+                      background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                      boxShadow: '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                    }}
+                  >
+                    <Send className="w-5 h-5 drop-shadow-sm" />
+                    Subir grabación
+                  </button>
+                </div>
               </div>
 
               {/* Error message */}
@@ -265,37 +288,66 @@ export default function TalentPulse() {
               </Button>
             </div>
 
-            {/* Question */}
-            <div className="text-center px-4">
-              <p className="text-lg leading-relaxed text-balance text-primary">
-                Cuentame sobre un momento en tu trabajo donde resolviste algo dificil.
-                Que hiciste, como lo abordaste y que aprendiste de eso?
+            {/* Question Card */}
+            <div 
+              className="mx-2 p-6 rounded-3xl"
+              style={{
+                background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.06), -8px -8px 16px rgba(255, 255, 255, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.8)',
+              }}
+            >
+              <p className="text-base text-center font-medium leading-relaxed text-slate-700">
+                Cuéntame sobre un momento en tu trabajo donde resolviste algo difícil. 
+                <span className="block mt-2 text-sm font-normal text-slate-500 italic">
+                  ¿Qué hiciste, cómo lo abordaste y qué aprendiste de eso?
+                </span>
               </p>
             </div>
 
             {/* Text Input */}
-            <div className="space-y-4">
-              <Textarea
-                value={textResponse}
-                onChange={(e) => setTextResponse(e.target.value)}
-                placeholder="Escribe tu respuesta aqui..."
-                className="min-h-[200px] bg-secondary border-border text-foreground placeholder:text-muted-foreground resize-none"
-              />
-              <p className="text-xs text-muted-foreground text-right">
+            <div className="space-y-4 px-2">
+              <div 
+                className="relative rounded-3xl overflow-hidden transition-all duration-300"
+                style={{
+                  background: '#f0f2f5',
+                  boxShadow: 'inset 6px 6px 12px rgba(0, 0, 0, 0.05), inset -6px -6px 12px rgba(255, 255, 255, 0.8)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                }}
+              >
+                <Textarea
+                  value={textResponse}
+                  onChange={(e) => setTextResponse(e.target.value)}
+                  placeholder="Describe cómo fue tu jornada aquí..."
+                  className="min-h-[220px] w-full bg-transparent border-none text-slate-700 placeholder:text-slate-400 resize-none focus-visible:ring-0 p-6 text-base leading-relaxed"
+                />
+              </div>
+              <p className="text-xs font-medium text-slate-400 text-right px-4">
                 {textResponse.length} caracteres
               </p>
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-center">
-              <Button
+            <div className="flex justify-center mt-8">
+              <button
                 onClick={handleTextSubmit}
                 disabled={!textResponse.trim()}
-                className="gap-2 px-8"
+                className={`flex items-center justify-center gap-2 px-8 py-3 rounded-full font-medium transition-all duration-300 ease-out ${
+                  !textResponse.trim() 
+                    ? "text-muted-foreground/50 cursor-not-allowed" 
+                    : "text-primary active:scale-95 hover:shadow-md"
+                }`}
+                style={{
+                  background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                  boxShadow: !textResponse.trim()
+                    ? 'inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.5)'
+                    : '6px 6px 15px rgba(0, 0, 0, 0.1), -6px -6px 15px rgba(255, 255, 255, 0.9), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                }}
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-4 h-4 drop-shadow-sm" />
                 Enviar respuesta
-              </Button>
+              </button>
             </div>
           </div>
         ) : null}
