@@ -10,7 +10,7 @@ import { useAudioRecorder, type RecordingPayload } from "@/hooks/use-audio-recor
 
 type Screen = "recording" | "writing" | "confirmation"
 type InputMode = "voice" | "text"
-type RecordingPhase = "question" | "transitioning" | "recorder"
+type RecordingPhase = "question" | "transitioning" | "recorder" | "review"
 
 export default function TalentPulse() {
   const [screen, setScreen] = useState<Screen>("recording")
@@ -54,7 +54,7 @@ export default function TalentPulse() {
       setIsButtonPressed(false)
       if (result) {
         setPayload(result)
-        setScreen("confirmation")
+        setRecordingPhase("review")
       }
     } else {
       await startRecording()
@@ -124,7 +124,7 @@ export default function TalentPulse() {
             {/* Recorder Phase */}
             <div
               className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out ${
-                recordingPhase === "recorder"
+                recordingPhase === "recorder" || recordingPhase === "review"
                   ? "opacity-100"
                   : "opacity-0 pointer-events-none"
               }`}
@@ -138,22 +138,27 @@ export default function TalentPulse() {
               <div className="flex justify-center">
                 <button
                   onClick={handleMicClick}
-                  disabled={isButtonPressed}
+                  disabled={isButtonPressed || recordingPhase === "review"}
                   className="w-32 h-32 rounded-full flex items-center justify-center relative"
                   style={{
                     background: isRecording 
                       ? 'linear-gradient(145deg, #ff6b6b, #ee5a5a)'
-                      : 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                      : recordingPhase === "review"
+                        ? 'linear-gradient(145deg, #f5f5f5, #e0e0e0)'
+                        : 'linear-gradient(145deg, #ffffff, #e6e6e6)',
                     boxShadow: isButtonPressed
                       ? isRecording
                         ? 'inset 6px 6px 12px rgba(150, 30, 30, 0.4), inset -6px -6px 12px rgba(255, 150, 150, 0.3)'
                         : 'inset 6px 6px 12px rgba(0, 0, 0, 0.2), inset -6px -6px 12px rgba(255, 255, 255, 0.5)'
                       : isRecording
                         ? '6px 6px 16px rgba(200, 80, 80, 0.4), -6px -6px 16px rgba(255, 255, 255, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.3), inset -2px -2px 4px rgba(0, 0, 0, 0.1)'
-                        : '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
+                        : recordingPhase === "review"
+                          ? 'inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.5)'
+                          : '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.5)',
                     transform: isButtonPressed ? 'scale(0.95)' : 'scale(1)',
-                    transition: 'all 0.15s ease-in-out',
+                    opacity: recordingPhase === "review" ? 0.6 : 1,
+                    transition: 'all 0.3s ease-in-out',
                   }}
                 >
                   <div 
@@ -176,24 +181,43 @@ export default function TalentPulse() {
               </div>
 
               {/* Instructions - fixed height */}
-              <p className="text-center text-sm text-muted-foreground mt-8 h-5">
-                {isRecording
+              <p className="text-center text-sm text-muted-foreground mt-8 h-5 transition-opacity duration-300">
+                {recordingPhase === "review"
+                  ? "Grabacion lista"
+                  : isRecording
                   ? "Pulsa para detener la grabacion"
                   : "Pulsa el microfono para comenzar"}
               </p>
 
-              {/* Write Option - fixed height container to prevent layout shift */}
-              <div className="h-14 flex items-center justify-center mt-4">
+              {/* Actions - fixed height container to prevent layout shift */}
+              <div className="h-14 flex items-center justify-center mt-4 relative w-full">
+                {/* Write Option */}
                 <Button
                   variant="ghost"
                   onClick={() => setScreen("writing")}
-                  className={`gap-2 text-muted-foreground hover:text-foreground transition-opacity duration-300 ${
-                    isRecording ? "opacity-0 pointer-events-none" : "opacity-100"
+                  className={`absolute gap-2 text-muted-foreground hover:text-foreground transition-all duration-500 ${
+                    isRecording || recordingPhase === "review" ? "opacity-0 translate-y-2 pointer-events-none" : "opacity-100 translate-y-0"
                   }`}
                 >
                   <PenLine className="w-4 h-4" />
                   Prefiero escribir
                 </Button>
+
+                {/* Upload Option */}
+                <button
+                  onClick={() => setScreen("confirmation")}
+                  className={`absolute flex items-center justify-center gap-3 px-10 py-4 rounded-full font-medium text-lg text-primary transition-all duration-700 ease-out active:scale-95 ${
+                    recordingPhase === "review" ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+                  }`}
+                  style={{
+                    background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                    boxShadow: '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                  }}
+                >
+                  <Send className="w-5 h-5 drop-shadow-sm" />
+                  Subir grabación
+                </button>
               </div>
 
               {/* Error message */}
