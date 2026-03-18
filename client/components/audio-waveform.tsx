@@ -27,7 +27,7 @@ export function AudioWaveform({ isRecording, analyser }: AudioWaveformProps) {
     const width = rect.width
     const height = rect.height
     const centerY = height / 2
-    const barCount = 48
+    const barCount = 32
     const barWidth = 4
     const gap = (width - barCount * barWidth) / (barCount + 1)
 
