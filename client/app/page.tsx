@@ -331,9 +331,9 @@ export default function TalentPulse() {
               <div 
                 className="relative rounded-3xl overflow-hidden transition-all duration-300"
                 style={{
-                  background: '#f0f2f5',
-                  boxShadow: 'inset 6px 6px 12px rgba(0, 0, 0, 0.05), inset -6px -6px 12px rgba(255, 255, 255, 0.8)',
-                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  background: '#e0e5ec',
+                  boxShadow: 'inset 6px 6px 12px rgba(163,177,198,0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.8)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                 }}
               >
                 <Textarea
