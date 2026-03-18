@@ -82,7 +82,28 @@ export default function TalentPulse() {
     }, 300)
   }
 
-  const handleTextSubmit = () => {
+  const submitHardcodedRecording = async () => {
+    try {
+      const response = await fetch("/api/recordings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_identifier: "user_123",
+          transcription: "Texto transcrito del audio...",
+          duration_seconds: 45,
+          language: "es"
+        }),
+      });
+      const data = await response.json();
+      console.log("Upload success:", data);
+    } catch (error) {
+      console.error("Upload error:", error);
+    }
+  }
+
+  const handleTextSubmit = async () => {
     if (!textResponse.trim()) return
     
     const textPayload: RecordingPayload = {
@@ -96,13 +117,13 @@ export default function TalentPulse() {
     
     setPayload(textPayload)
     setInputMode("text")
-    // TODO: Implement upload flow
     console.log("Subiendo texto...", textPayload)
+    await submitHardcodedRecording()
   }
 
   return (
-    <main className="min-h-screen bg-[#f0f2f5] flex flex-col items-center justify-center p-6 font-sans">
-      <div className={`w-full max-w-lg transition-opacity duration-300 ease-in-out ${isTransitioningScreen ? 'opacity-0' : 'opacity-100'}`}>
+    <main className="min-h-screen bg-[#e0e5ec] flex flex-col items-center justify-center p-6 font-sans relative overflow-hidden">
+      <div className={`w-full max-w-lg relative z-10 transition-opacity duration-300 ease-in-out ${isTransitioningScreen ? 'opacity-0' : 'opacity-100'}`}>
 
 
         {screen === "recording" ? (
@@ -131,9 +152,9 @@ export default function TalentPulse() {
                   <button
                     className="flex items-center justify-center gap-2 px-8 py-3 rounded-full font-medium text-primary transition-transform duration-200 active:scale-95 animate-pulse"
                     style={{
-                      background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
-                      boxShadow: '6px 6px 15px rgba(0, 0, 0, 0.1), -6px -6px 15px rgba(255, 255, 255, 0.9), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
+                      boxShadow: '6px 6px 15px rgba(163,177,198,0.6), -6px -6px 15px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(163,177,198,0.2)',
+                      border: '1px solid rgba(255, 255, 255, 0.4)',
                       animationDuration: '3s'
                     }}
                   >
@@ -170,18 +191,18 @@ export default function TalentPulse() {
                     background: isRecording 
                       ? 'linear-gradient(145deg, #ff6b6b, #ee5a5a)'
                       : recordingPhase === "review"
-                        ? 'linear-gradient(145deg, #f5f5f5, #e0e0e0)'
-                        : 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                        ? 'linear-gradient(145deg, #e6ebf2, #c1c8d1)'
+                        : 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
                     boxShadow: isButtonPressed
                       ? isRecording
                         ? 'inset 6px 6px 12px rgba(150, 30, 30, 0.4), inset -6px -6px 12px rgba(255, 150, 150, 0.3)'
-                        : 'inset 6px 6px 12px rgba(0, 0, 0, 0.2), inset -6px -6px 12px rgba(255, 255, 255, 0.5)'
+                        : 'inset 6px 6px 12px rgba(163,177,198,0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.8)'
                       : isRecording
                         ? '6px 6px 16px rgba(200, 80, 80, 0.4), -6px -6px 16px rgba(255, 255, 255, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.3), inset -2px -2px 4px rgba(0, 0, 0, 0.1)'
                         : recordingPhase === "review"
-                          ? 'inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.5)'
-                          : '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                          ? 'inset 4px 4px 8px rgba(163,177,198,0.5), inset -4px -4px 8px rgba(255,255,255,0.8)'
+                          : '10px 10px 20px rgba(163,177,198,0.6), -10px -10px 20px rgba(255, 255, 255, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(163,177,198,0.2)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
                     transform: isButtonPressed ? 'scale(0.95)' : 'scale(1)',
                     opacity: recordingPhase === "review" ? 0.6 : 1,
                     transition: 'all 0.3s ease-in-out',
@@ -212,9 +233,9 @@ export default function TalentPulse() {
                     isRecording || recordingPhase === "review" ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100 hover:scale-105"
                   }`}
                   style={{
-                    background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
-                    boxShadow: '4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.9), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                    background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
+                    boxShadow: '4px 4px 10px rgba(163,177,198,0.6), -4px -4px 10px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(163,177,198,0.2)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
                   }}
                   title="Prefiero escribir"
                 >
@@ -250,15 +271,15 @@ export default function TalentPulse() {
                   }`}
                 >
                   <button
-                    onClick={() => {
-                      // TODO: Implement upload flow
+                    onClick={async () => {
                       console.log("Subiendo audio...", payload)
+                      await submitHardcodedRecording()
                     }}
                     className="flex items-center justify-center gap-3 px-10 py-4 rounded-full font-medium text-lg text-primary transition-transform duration-200 active:scale-95"
                     style={{
-                      background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
-                      boxShadow: '8px 8px 20px rgba(0, 0, 0, 0.15), -8px -8px 20px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
+                      boxShadow: '8px 8px 20px rgba(163,177,198,0.6), -8px -8px 20px rgba(255, 255, 255, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(163,177,198,0.2)',
+                      border: '1px solid rgba(255, 255, 255, 0.4)',
                     }}
                   >
                     <Send className="w-5 h-5 drop-shadow-sm" />
@@ -292,9 +313,9 @@ export default function TalentPulse() {
             <div 
               className="mx-2 p-6 rounded-3xl"
               style={{
-                background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
-                boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.06), -8px -8px 16px rgba(255, 255, 255, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.8)',
+                background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
+                boxShadow: '8px 8px 16px rgba(163,177,198,0.6), -8px -8px 16px rgba(255, 255, 255, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
               }}
             >
               <p className="text-base text-center font-medium leading-relaxed text-slate-700">
@@ -338,11 +359,11 @@ export default function TalentPulse() {
                     : "text-primary active:scale-95 hover:shadow-md"
                 }`}
                 style={{
-                  background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                  background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
                   boxShadow: !textResponse.trim()
-                    ? 'inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.5)'
-                    : '6px 6px 15px rgba(0, 0, 0, 0.1), -6px -6px 15px rgba(255, 255, 255, 0.9), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                    ? 'inset 2px 2px 5px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.8)'
+                    : '6px 6px 15px rgba(163,177,198,0.6), -6px -6px 15px rgba(255,255,255,0.8), inset 1px 1px 2px rgba(255,255,255,0.8), inset -1px -1px 2px rgba(163,177,198,0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
                 }}
               >
                 <Send className="w-4 h-4 drop-shadow-sm" />
