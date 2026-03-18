@@ -139,12 +139,13 @@ export default function TalentPulse() {
                 <AudioWaveform isRecording={isRecording} analyser={analyser} />
               </div>
 
-              {/* Mic Button - Skeuomorphic Style with Press Effect */}
-              <div className="flex justify-center">
+              {/* Mic Button Container */}
+              <div className="flex justify-center relative">
+                {/* Main Mic Button - Skeuomorphic Style with Press Effect */}
                 <button
                   onClick={handleMicClick}
                   disabled={isButtonPressed || recordingPhase === "review"}
-                  className="w-32 h-32 rounded-full flex items-center justify-center relative"
+                  className="w-40 h-40 rounded-full flex items-center justify-center relative z-10"
                   style={{
                     background: isRecording 
                       ? 'linear-gradient(145deg, #ff6b6b, #ee5a5a)'
@@ -174,40 +175,43 @@ export default function TalentPulse() {
                     }}
                   >
                     {isRecording ? (
-                      <Square className="w-10 h-10 text-white drop-shadow-sm" />
+                      <Square className="w-12 h-12 text-white drop-shadow-sm" />
                     ) : (
-                      <Mic className="w-12 h-12 drop-shadow-sm text-primary" />
+                      <Mic className="w-14 h-14 drop-shadow-sm text-primary" />
                     )}
                   </div>
                   <span className="sr-only">
                     {isRecording ? "Detener grabacion" : "Iniciar grabacion"}
                   </span>
                 </button>
+
+                {/* Write Option - Small satellite button */}
+                <button
+                  onClick={() => setScreen("writing")}
+                  className={`absolute -bottom-6 -right-12 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 ease-out active:scale-95 z-20 ${
+                    isRecording || recordingPhase === "review" ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100 hover:scale-105"
+                  }`}
+                  style={{
+                    background: 'linear-gradient(145deg, #ffffff, #e6e6e6)',
+                    boxShadow: '4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.9), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                  }}
+                  title="Prefiero escribir"
+                >
+                  <PenLine className="w-5 h-5 text-primary drop-shadow-sm" />
+                  <span className="sr-only">Prefiero escribir</span>
+                </button>
               </div>
 
               {/* Instructions - fixed height */}
-              <p className="text-center text-sm text-muted-foreground mt-8 h-5 transition-opacity duration-300">
+              <p className="text-center text-sm italic text-muted-foreground mt-8 h-10 transition-opacity duration-300 px-4 max-w-sm mx-auto">
                 {recordingPhase === "review"
                   ? "Grabacion lista"
-                  : isRecording
-                  ? "Pulsa para detener la grabacion"
-                  : "Pulsa el microfono para comenzar"}
+                  : "Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?"}
               </p>
 
               {/* Actions - fixed height container to prevent layout shift */}
               <div className="h-14 flex items-center justify-center mt-4 relative w-full">
-                {/* Write Option */}
-                <Button
-                  variant="ghost"
-                  onClick={() => setScreen("writing")}
-                  className={`absolute gap-2 text-muted-foreground hover:text-foreground transition-all duration-500 ${
-                    isRecording || recordingPhase === "review" ? "opacity-0 translate-y-2 pointer-events-none" : "opacity-100 translate-y-0"
-                  }`}
-                >
-                  <PenLine className="w-4 h-4" />
-                  Prefiero escribir
-                </Button>
-
                 {/* Upload Option */}
                 <button
                   onClick={() => setScreen("confirmation")}
