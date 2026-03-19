@@ -162,7 +162,7 @@ function TalentPulseInner() {
                     border: '1px solid rgba(255, 255, 255, 0.4)',
                   }}
                 >
-                  <p className="text-xl leading-relaxed text-balance text-primary text-center">
+                  <p className="text-xl leading-relaxed text-balance text-slate-700 text-center">
                     {question}
                   </p>
                 </div>
