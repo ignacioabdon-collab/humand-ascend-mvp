@@ -302,26 +302,26 @@ export default function TalentPulse() {
                 </button>
               </div>
 
-              {/* Instructions - fixed height */}
-              <div className="relative mt-8 h-28 px-4 max-w-sm mx-auto w-full">
+              {/* Instructions */}
+              <div className="grid mt-12 px-4 max-w-sm mx-auto w-full">
                 <p 
-                  className={`absolute inset-0 text-center text-sm italic text-muted-foreground transition-opacity duration-500 ${
-                    recordingPhase === "review" ? "opacity-0" : "opacity-100"
+                  className={`col-start-1 row-start-1 text-center text-sm italic text-muted-foreground transition-opacity duration-500 ${
+                    recordingPhase === "review" ? "opacity-0 pointer-events-none" : "opacity-100"
                   }`}
                 >
                   Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?
                 </p>
                 <p 
-                  className={`absolute inset-0 text-center text-sm text-muted-foreground transition-opacity duration-1000 ${
-                    recordingPhase === "review" ? "opacity-100 delay-[600ms]" : "opacity-0"
+                  className={`col-start-1 row-start-1 text-center text-sm text-muted-foreground transition-opacity duration-1000 ${
+                    recordingPhase === "review" ? "opacity-100 delay-[600ms]" : "opacity-0 pointer-events-none"
                   }`}
                 >
                   El resumen de tu día está listo para enviarse. Registrar tus logros nos ayuda a reconocer tu esfuerzo y potenciar tu crecimiento.
                 </p>
               </div>
 
-              {/* Actions - fixed height container to prevent layout shift */}
-              <div className="h-24 flex items-center justify-center mt-16 relative w-full">
+              {/* Actions */}
+              <div className="flex items-center justify-center mt-14 relative w-full h-24">
                 {/* Upload Option */}
                 <div 
                   className={`absolute transition-all duration-1000 ease-out ${
@@ -333,7 +333,7 @@ export default function TalentPulse() {
                       console.log("Subiendo audio...", payload)
                       await submitHardcodedRecording()
                     }}
-                    className="flex items-center justify-center gap-3 px-10 py-4 rounded-full font-medium text-lg text-primary transition-transform duration-200 active:scale-95"
+                    className="w-20 h-20 rounded-full flex items-center justify-center transition-transform duration-200 active:scale-95 hover:scale-105"
                     style={{
                       background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
                       boxShadow: '8px 8px 20px rgba(163,177,198,0.6), -8px -8px 20px rgba(255, 255, 255, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(163,177,198,0.2)',
@@ -341,13 +341,13 @@ export default function TalentPulse() {
                     }}
                   >
                     <Send 
-                      className="w-5 h-5" 
-                      strokeWidth={2.5}
+                      className="w-8 h-8 text-primary" 
+                      strokeWidth={2}
                       style={{
                         filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
                       }}
                     />
-                    Subir grabación
+                    <span className="sr-only">Subir grabación</span>
                   </button>
                 </div>
               </div>
