@@ -238,24 +238,64 @@ export default function TalentPulse() {
                   </span>
                 </button>
 
-                {/* Write Option - Small satellite button */}
+                {/* Reset Option - Small satellite button (Left) */}
                 <button
-                  onClick={() => handleScreenChange("writing")}
-                  className={`absolute -bottom-6 -right-12 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 ease-out active:scale-95 z-20 ${
-                    isRecording || recordingPhase === "review" ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100 hover:scale-105"
+                  onClick={() => {
+                    setPayload(null)
+                    setRecordingPhase("recorder")
+                  }}
+                  disabled={recordingPhase !== "review"}
+                  className={`absolute -bottom-6 -left-12 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 ease-out z-20 ${
+                    recordingPhase !== "review" 
+                      ? "opacity-50 cursor-not-allowed scale-95" 
+                      : "opacity-100 scale-100 hover:scale-105 active:scale-95"
                   }`}
                   style={{
                     background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
-                    boxShadow: '4px 4px 10px rgba(163,177,198,0.6), -4px -4px 10px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(163,177,198,0.2)',
+                    boxShadow: recordingPhase !== "review"
+                      ? 'inset 2px 2px 5px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.8)'
+                      : '4px 4px 10px rgba(163,177,198,0.6), -4px -4px 10px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(163,177,198,0.2)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
+                  }}
+                  title="Volver a grabar"
+                >
+                  <RotateCcw 
+                    className={`w-5 h-5 transition-colors duration-300 ${recordingPhase !== "review" ? "text-slate-400" : "text-slate-700"}`} 
+                    strokeWidth={2.5}
+                    style={{
+                      filter: recordingPhase !== "review"
+                        ? 'none'
+                        : 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
+                    }}
+                  />
+                  <span className="sr-only">Volver a grabar</span>
+                </button>
+
+                {/* Write Option - Small satellite button (Right) */}
+                <button
+                  onClick={() => handleScreenChange("writing")}
+                  disabled={isRecording || recordingPhase === "review"}
+                  className={`absolute -bottom-6 -right-12 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 ease-out z-20 ${
+                    isRecording || recordingPhase === "review" 
+                      ? "opacity-50 cursor-not-allowed scale-95" 
+                      : "opacity-100 scale-100 hover:scale-105 active:scale-95"
+                  }`}
+                  style={{
+                    background: 'linear-gradient(145deg, #e6ebf2, #c1c8d1)',
+                    boxShadow: isRecording || recordingPhase === "review"
+                      ? 'inset 2px 2px 5px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.8)'
+                      : '4px 4px 10px rgba(163,177,198,0.6), -4px -4px 10px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(163,177,198,0.2)',
                     border: '1px solid rgba(255, 255, 255, 0.4)',
                   }}
                   title="Prefiero escribir"
                 >
                   <PenLine 
-                    className="w-5 h-5 text-primary" 
+                    className={`w-5 h-5 transition-colors duration-300 ${isRecording || recordingPhase === "review" ? "text-slate-400" : "text-primary"}`} 
                     strokeWidth={2.5}
                     style={{
-                      filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
+                      filter: isRecording || recordingPhase === "review"
+                        ? 'none'
+                        : 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
                     }}
                   />
                   <span className="sr-only">Prefiero escribir</span>
