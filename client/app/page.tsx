@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Mic, Square, RotateCcw, PenLine, Send, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -8,11 +9,24 @@ import { AudioWaveform } from "@/components/audio-waveform"
 import { SessionCard } from "@/components/session-card"
 import { useAudioRecorder, type RecordingPayload } from "@/hooks/use-audio-recorder"
 
+const DEFAULT_QUESTION = "Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?"
+
 type Screen = "recording" | "writing"
 type InputMode = "voice" | "text"
 type RecordingPhase = "question" | "transitioning" | "recorder" | "review"
 
 export default function TalentPulse() {
+  return (
+    <Suspense fallback={null}>
+      <TalentPulseInner />
+    </Suspense>
+  )
+}
+
+function TalentPulseInner() {
+  const searchParams = useSearchParams()
+  const question = searchParams.get("question") || DEFAULT_QUESTION
+
   const [screen, setScreen] = useState<Screen>("recording")
   const [isTransitioningScreen, setIsTransitioningScreen] = useState(false)
   const [payload, setPayload] = useState<RecordingPayload | null>(null)
@@ -140,8 +154,7 @@ export default function TalentPulse() {
               >
                 <div className="text-center px-4">
                   <p className="text-xl leading-relaxed text-balance text-primary">
-                    Cuentame sobre un momento en tu trabajo donde resolviste algo dificil.
-                    Que hiciste, como lo abordaste y que aprendiste de eso?
+                    {question}
                   </p>
                 </div>
                 <div
@@ -309,7 +322,7 @@ export default function TalentPulse() {
                     recordingPhase === "review" ? "opacity-0 pointer-events-none" : "opacity-100"
                   }`}
                 >
-                  Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?
+                  {question}
                 </p>
                 <p 
                   className={`col-start-1 row-start-1 text-center text-sm text-muted-foreground transition-opacity duration-1000 ${
