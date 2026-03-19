@@ -216,9 +216,21 @@ export default function TalentPulse() {
                     }}
                   >
                     {isRecording ? (
-                      <Square className="w-12 h-12 text-white drop-shadow-sm" />
+                      <Square 
+                        className="w-12 h-12 text-white" 
+                        fill="currentColor"
+                        style={{
+                          filter: 'drop-shadow(1px 2px 2px rgba(0,0,0,0.2))'
+                        }}
+                      />
                     ) : (
-                      <Mic className={`w-14 h-14 drop-shadow-sm transition-colors duration-300 ${recordingPhase === "review" ? "text-slate-400" : "text-primary"}`} />
+                      <Mic 
+                        className={`w-14 h-14 transition-colors duration-300 ${recordingPhase === "review" ? "text-slate-400" : "text-primary"}`} 
+                        strokeWidth={2.5}
+                        style={{
+                          filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
+                        }}
+                      />
                     )}
                   </div>
                   <span className="sr-only">
@@ -239,7 +251,13 @@ export default function TalentPulse() {
                   }}
                   title="Prefiero escribir"
                 >
-                  <PenLine className="w-5 h-5 text-primary drop-shadow-sm" />
+                  <PenLine 
+                    className="w-5 h-5 text-primary" 
+                    strokeWidth={2.5}
+                    style={{
+                      filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
+                    }}
+                  />
                   <span className="sr-only">Prefiero escribir</span>
                 </button>
               </div>
@@ -282,7 +300,13 @@ export default function TalentPulse() {
                       border: '1px solid rgba(255, 255, 255, 0.4)',
                     }}
                   >
-                    <Send className="w-5 h-5 drop-shadow-sm" />
+                    <Send 
+                      className="w-5 h-5" 
+                      strokeWidth={2.5}
+                      style={{
+                        filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
+                      }}
+                    />
                     Subir grabación
                   </button>
                 </div>
@@ -304,7 +328,13 @@ export default function TalentPulse() {
                 onClick={() => handleScreenChange("recording")}
                 className="gap-2 text-slate-500 hover:text-slate-700 -ml-2"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft 
+                  className="w-4 h-4" 
+                  strokeWidth={2.5}
+                  style={{
+                    filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.3))'
+                  }}
+                />
                 Volver
               </Button>
             </div>
@@ -366,7 +396,15 @@ export default function TalentPulse() {
                   border: '1px solid rgba(255, 255, 255, 0.4)',
                 }}
               >
-                <Send className={`w-4 h-4 drop-shadow-sm transition-all duration-300 ${!textResponse.trim() ? "opacity-50" : "opacity-100"}`} />
+                <Send 
+                  className={`w-4 h-4 transition-all duration-300 ${!textResponse.trim() ? "opacity-50" : "opacity-100"}`} 
+                  strokeWidth={2.5}
+                  style={{
+                    filter: !textResponse.trim() 
+                      ? 'none' 
+                      : 'drop-shadow(1px 1px 1px rgba(255,255,255,0.9)) drop-shadow(-1px -1px 1px rgba(163,177,198,0.4))'
+                  }}
+                />
                 Enviar respuesta
               </button>
             </div>
