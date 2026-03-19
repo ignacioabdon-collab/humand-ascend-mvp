@@ -1,4 +1,24 @@
 import { NextResponse } from "next/server"
+import webpush from "web-push"
+import { readFile } from "fs/promises"
+import { join } from "path"
+
+webpush.setVapidDetails(
+  "mailto:hello@humand.co",
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+)
+
+const SUBSCRIPTIONS_FILE = join(process.cwd(), "push-subscriptions.json")
+
+async function getSubscriptions(): Promise<webpush.PushSubscription[]> {
+  try {
+    const data = await readFile(SUBSCRIPTIONS_FILE, "utf-8")
+    return JSON.parse(data)
+  } catch {
+    return []
+  }
+}
 
 interface WebhookPayload {
   type: string
@@ -12,7 +32,6 @@ export async function POST(request: Request) {
   try {
     const body: WebhookPayload = await request.json()
 
-    // Validate required fields
     if (!body.type || !body.question) {
       return NextResponse.json(
         { error: "Missing required fields: type and question are required" },
@@ -20,7 +39,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Validate webhook type
     if (body.type !== "reflection_question") {
       return NextResponse.json(
         { error: `Unsupported webhook type: ${body.type}` },
@@ -28,29 +46,36 @@ export async function POST(request: Request) {
       )
     }
 
-    // Extract the question from the payload
     const question = body.question
+    console.log("Webhook received:", { type: body.type, question })
 
-    // Log the received webhook for debugging
-    console.log("Webhook received:", {
-      type: body.type,
-      question: question,
-      timestamp: body.timestamp,
-      source: body.source,
-      automatic: body.automatic,
-    })
-
-    // Return success with the extracted question and a redirect URL
     const baseUrl = request.headers.get("host") || "localhost:3000"
     const protocol = request.headers.get("x-forwarded-proto") || "http"
     const redirectUrl = `${protocol}://${baseUrl}?question=${encodeURIComponent(question)}`
 
+    const subscriptions = await getSubscriptions()
+    const pushPayload = JSON.stringify({
+      title: "Humand Ascend",
+      body: "Tienes una nueva pregunta de reflexión",
+      question,
+      url: redirectUrl,
+    })
+
+    const results = await Promise.allSettled(
+      subscriptions.map((sub) => webpush.sendNotification(sub, pushPayload))
+    )
+
+    const sent = results.filter((r) => r.status === "fulfilled").length
+    const failed = results.filter((r) => r.status === "rejected").length
+    console.log(`Push notifications: ${sent} sent, ${failed} failed`)
+
     return NextResponse.json({
       success: true,
-      message: "Webhook processed successfully",
+      message: "Webhook processed and push notifications sent",
       data: {
-        question: question,
-        redirectUrl: redirectUrl,
+        question,
+        redirectUrl,
+        pushNotifications: { total: subscriptions.length, sent, failed },
         receivedAt: new Date().toISOString(),
       },
     })
@@ -63,7 +88,6 @@ export async function POST(request: Request) {
   }
 }
 
-// Optional: Handle GET requests for webhook verification
 export async function GET() {
   return NextResponse.json({
     status: "ok",

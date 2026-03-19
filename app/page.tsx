@@ -9,6 +9,7 @@ import { AudioWaveform } from "@/components/audio-waveform"
 import { SessionCard } from "@/components/session-card"
 import { ThankYouCard } from "@/components/thank-you-card"
 import { useAudioRecorder, type RecordingPayload } from "@/hooks/use-audio-recorder"
+import { usePushNotifications } from "@/hooks/use-push-notifications"
 
 const DEFAULT_QUESTION = "Cuentame sobre un momento en tu trabajo donde resolviste algo dificil. Que hiciste, como lo abordaste y que aprendiste de eso?"
 
@@ -37,6 +38,7 @@ function TalentPulseInner() {
   const [showContinueHint, setShowContinueHint] = useState(false)
   const [isButtonPressed, setIsButtonPressed] = useState(false)
   const { isRecording, analyser, startRecording, stopRecording, error } = useAudioRecorder()
+  const { requestPermission } = usePushNotifications()
 
   // Show "Pulsa para continuar" after 4 seconds
   useEffect(() => {
@@ -50,9 +52,9 @@ function TalentPulseInner() {
 
   const handleContinueClick = () => {
     if (recordingPhase !== "question") return
+    requestPermission()
     setRecordingPhase("transitioning")
     setShowContinueHint(false)
-    // After fade out (500ms), show recorder
     setTimeout(() => {
       setRecordingPhase("recorder")
     }, 500)
